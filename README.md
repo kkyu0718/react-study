@@ -1,3 +1,3 @@
 # react-study
 - todo app
-![Untitled](https://user-images.githubusercontent.com/80209277/179348268-9badead6-d441-4d80-80ec-44fb492c67c0.png)
+![ezgif com-gif-maker](https://user-images.githubusercontent.com/80209277/179678087-5c68cf98-7cb4-4b99-9a1d-e961b8b5691a.gif)
