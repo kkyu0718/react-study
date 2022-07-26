@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 import {Typography, Button, Form, Input} from 'antd';
 import FileUpload from '../../utils/FileUpload';
+import Axios from 'axios';
 
 const {TextArea} = Input;
 
-function UploadProductPage() {
+function UploadProductPage(props) {
     
     const [Title, setTitle] = useState("")
     const [Description, setDescription] = useState("")
@@ -38,13 +39,49 @@ function UploadProductPage() {
         setContinent(event.currentTarget.value)
     }
 
+    const updateImages = (newImages) => {
+        setImages(newImages)
+    }
+
+    const submitHandler = (event) => {
+        event.preventDefault()
+        
+        if(!Title || !Description || !Price || !Continent || !Images){
+            return alert("모든 값을 넣어주셔야 합니다")
+        }
+
+        //서버에 채운 값을 request로 보낸다.
+        const body = {
+            //로그인 된 사람의 아이디
+            writer : props.user.userData._id,
+            title : Title,
+            description : Description,
+            price : Price,
+            images : Images,
+            continents : Continent
+        }
+
+        Axios.post('/api/product', body)
+            .then(response => {
+                if(response.data.success){
+                    console.log("살려줘")
+                    alert("상품 업로드에 성공 했습니다")
+                    props.history.push('/')
+                }else{
+                    console.log("살려줘")
+
+                    alert("상품 업로드에 실패 했습니다")
+                }
+            })
+    }
+
   return (
     <div style={{ maxWidth : '700px', margin : '2rem auto'}}>
         <div style = {{ textAlign: 'center', marginBottom : '2rem'}}>
             <h2>여행 상품 업로드</h2>
         </div>
-        <Form>
-            <FileUpload/>
+        <Form onSubmitCapture={submitHandler}>
+            <FileUpload refreshFunction = {updateImages}/>
             {/* {DropZone} */}
             <br />
             <br />
@@ -67,7 +104,7 @@ function UploadProductPage() {
             </select>
             <br />
             <br />
-            <Button>
+            <Button htmlType = "submit">
                 확인
             </Button>
 

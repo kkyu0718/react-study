@@ -4,7 +4,7 @@ import {Icon} from 'antd'
 import axios from 'axios'
 import { string } from 'yup'
 
-function FileUpload() {
+function FileUpload(props) {
 
     const [Images, setImages] = useState([])
 
@@ -19,12 +19,23 @@ function FileUpload() {
         axios.post('/api/product/image', formData, config)
             .then(response => {
                 if(response.data.success){
-                    console.log(response.data)
+                  console.log("파일 저장 성공")
                     setImages([...Images, response.data.filePath])
+                    props.refreshFunction([...Images, response.data.filePath])
                 }else{
                     alert('파일을 저장하는데 실패했습니다.')
                 }
             })
+    }
+
+    const deleteHandler = (Image) =>{
+      const currentIndex = Images.indexOf(Image)
+
+      let newImages = [...Images]
+      newImages.splice(currentIndex, 1)
+
+      setImages(newImages)
+      props.refreshFunction([newImages])
     }
   return (
     <div style={{display : 'flex', justifyContent : 'space-between'}}>
@@ -41,7 +52,7 @@ function FileUpload() {
     </section>
   )}
 </Dropzone>
-<div style = {{display : 'flex', width : '350px', height : '240px', overflowX : 'scroll'}}>
+<div onClick={deleteHandler} style = {{display : 'flex', width : '350px', height : '240px', overflowX : 'scroll'}}>
     {Images.map((image, index) => (
         <div key = {index}>
             <img style={{ minWidth : '300px', width : '300px', height : '240px'}}
